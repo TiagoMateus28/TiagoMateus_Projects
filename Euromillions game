@@ -1,0 +1,132 @@
+from random import randint
+
+
+# This function gives 5 different random lottery values between 1-50
+def randomLotteryNumbers ():
+    newNumbersList = []
+    for _ in range (5):
+        while True:
+            newNumber = randint(1,50)
+            if newNumber not in newNumbersList:
+                newNumbersList.append(newNumber)
+                break    
+    return newNumbersList
+
+# This function gives 2 different random lottery values between 1-12
+def randomLotteryStars ():
+    newStarsList = []
+    for _ in range (2):
+        while True:
+            newStar = randint(1,12)
+            if newStar not in newStarsList:
+                newStarsList.append(newStar)
+                break  
+    return newStarsList
+
+listLotteryNumbers = [randomLotteryNumbers (), randomLotteryStars ()]
+
+
+# This function checks if the numbers and stars inputed by the player are valid
+def validStarsAndNumber(numbers : int, min : int, max : int, notStar : bool):
+    # Checks if number is valid
+    if notStar:
+        if min <= numbers <= max:
+            return True
+        else:
+            print("\n Invalid number, choose another number\n")
+            return False
+    # Checks if star is valid
+    else:
+        if min <= numbers <= max:
+            return True
+        else:
+            print("\n Invalid star, choose another star\n")
+            return False
+
+# This function checks if the numbers and stars inputed by the player are repeated
+def repeatedNumber(playerList : list, playerChoosenNumber : int, notAStar : bool):
+    if playerChoosenNumber in playerList:
+        # Checks if number is repeated
+        if notAStar:
+            print("\n Repeated number, choose another number\n")
+        # Checks if star is repeated
+        else:
+            print("\n Repeated star, choose another star\n")
+        return True
+    else:
+        return False
+
+# This function compares the lottery numbers with the player choosen lottery numbers and 
+# returns an empty list if there is no match or a list with the matched lottery numbers and how many lottery numbers the player guessed
+def compareLotteryNumbers(lotteryList : list, playerLotteryList : list):
+    newNumberList = []
+    countRightNumbers = 0
+    for number in playerLotteryList:
+        if number in lotteryList:
+            countRightNumbers += 1
+            newNumberList.append(number)
+    return newNumberList , countRightNumbers
+
+# This function compares the lottery stars with the player choosen lottery stars and 
+# returns an empty list if there is no match or a list with the matched lottery stars and how many lottery stars the player guessed
+def compareLotteryStars(lotteryList : list, playerLotteryList : list):
+    newStarList = []
+    countRightstars = 0
+    for star in playerLotteryList:
+        if star in lotteryList:
+            countRightstars += 1
+            newStarList.append(star)
+    return newStarList, countRightstars
+
+# This function may attribute an award based on the guessed lottery numbers followed by the guessed lottery stars
+def lotteryAwards (lotteryNumbers : list,playerListnumbers: list, lotteryStars: list,playerStars: list):
+    newNumberList, countNumberGuessed = compareLotteryNumbers(lotteryNumbers,playerListnumbers)
+    newStarNumbers, countStarsGuessed = compareLotteryStars(lotteryStars, playerStars)
+
+    # Matchs the total of right lottery numbers guessed by the player and returns a message with the amount of number and stars guessed, followed by the same numbers and stars as in the lottery 
+    match countNumberGuessed:
+        case 5:
+            if countStarsGuessed == 2:
+                return (f"\nCongrats you guessed all {countNumberGuessed} numbers {newNumberList} and all {countStarsGuessed} stars {newStarNumbers} 🎉!!\n \nYou will receive 72.274.808,00€ 🤑\n")
+            elif countStarsGuessed == 1:
+                return (f"\nCongrats you guessed all {countNumberGuessed} numbers {newNumberList} and {countStarsGuessed} star {newStarNumbers} 🎉!!\n \nYou will receive 82.195,88€ 🤑\n")
+            else:
+                return (f"\nCongrats you guessed all {countNumberGuessed} numbers {newNumberList} and {countStarsGuessed} {'star ' if countStarsGuessed == 1 else 'stars '} {newStarNumbers} 🎉!!\n \nYou will receive  9.605,26€ 🤑 €\n")
+        case 4: 
+            if countStarsGuessed == 2:
+                return (f"\nCongrats you guessed {countNumberGuessed} numbers {newNumberList} and {countStarsGuessed} stars {newStarNumbers}🎉!!\n \nYou will receive 793,00€ 🤑\n")
+            else:
+                return (f"\nCongrats you guessed {countNumberGuessed} numbers {newNumberList} and {countStarsGuessed} {'star' if countStarsGuessed == 1 else 'stars'} {newStarNumbers}🎉!!\n \nYou will receive 62,72€ 🤑\n ")
+        case _ :
+            return (f"\nYou guessed {countNumberGuessed} {'number' if countNumberGuessed == 1 else 'numbers'} {newNumberList if newNumberList else ''} and {countStarsGuessed} {'star' if countStarsGuessed == 1 else 'stars'} {newStarNumbers if newStarNumbers else ''}.\n \nBetter Luck Next Time 😭\n")
+
+# This is the main function where the player chooses its lottery numbers and stars and calls other function to check if the inputed data iis valid or repeated
+# Additionally the function will print the player lottery numbers and stars, the generated lottery numbers and stars and finally the awards if any
+def playerInsertLotteryNumbers ():
+    playerNumbers = []
+    playerStars = []
+    countNumber = 1
+    countStar = 1
+    while True:
+        
+        if len(playerNumbers) < 5:
+            lotteryPlayerNumber = int(input(f"Choose {countNumber} number from 1-50: "))
+            notAStar = True
+            if validStarsAndNumber(lotteryPlayerNumber,1, 50, notAStar) and not repeatedNumber(playerNumbers, lotteryPlayerNumber,notAStar ):
+                playerNumbers.append(lotteryPlayerNumber)
+                countNumber += 1
+        elif len(playerStars) < 2:
+            lotteryPlayerStar = int(input(f"Choose {countStar} star from 1-12: "))
+            notAStar = False
+            if validStarsAndNumber(lotteryPlayerStar,1, 12, notAStar) and not repeatedNumber(playerStars, lotteryPlayerStar, notAStar):
+                playerStars.append(lotteryPlayerStar)
+                countStar +=1
+        else:
+            print(f"\nPlayer numbers: {playerNumbers}; Player stars: {playerStars}\n")
+            print("*" * 100)
+            print(f"The lottery numbers: {listLotteryNumbers[0]} and Stars:{listLotteryNumbers[1]} ")
+            print("*" * 100)
+            print(lotteryAwards(listLotteryNumbers[0] ,playerNumbers, listLotteryNumbers[1] ,playerStars))
+            break
+
+playerInsertLotteryNumbers()
